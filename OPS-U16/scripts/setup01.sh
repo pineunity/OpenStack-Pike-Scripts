@@ -120,7 +120,7 @@ iface $DATA_INTERFACE inet static
 EOF
 
     else
-        echocolor "Cau hinh network that bai"
+        echocolor "Failed to configure IP address"
         exit 1
     fi        
 }
@@ -141,7 +141,7 @@ function setup_hostname {
         echo "$HOST_COM2" > $path_hostname
         hostname -F $path_hostname
     else
-        echocolor "Cau hinh hostname that bai"
+        echocolor "Failed to configure hostname"
         exit 1
     fi
 }
@@ -171,7 +171,7 @@ function setup_hosts {
         echo "$CIN_MGNT_IP    $HOST_CIN" >> $path_hosts
 
     else
-        echocolor "setup hostname sai roi"
+        echocolor "Failed to setup hostname"
         exit 1
 
     fi
@@ -182,7 +182,7 @@ function repo_openstack {
     echocolor "Enable the OpenStack Newton repository"
     sleep 3
     apt install software-properties-common -y
-    add-apt-repository cloud-archive:newton -y
+    add-apt-repository cloud-archive:pike -y
     echocolor "Upgrade the packages for server"
     sleep 3
     apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade

@@ -37,9 +37,8 @@ function install_ntp {
 
 	if [ "$1" == "controller" ]; then
 		sed -i 's/pool 2.debian.pool.ntp.org offline iburst/\
-server 1.vn.pool.ntp.org iburst \
-server 0.asia.pool.ntp.org iburst \
-server 3.asia.pool.ntp.org iburst/g' $path_chrony
+server time.google.com iburst \
+allow  $SUBNET_IP_MGMT/g' $path_chrony
 
 	elif [ "$1" == "compute1" ]; then
 		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
@@ -127,6 +126,16 @@ function install_memcache {
 	echocolor "Done, you can run next script"
 }
 
+#################################################
+function install_etcd {
+       echocolor "install and configure etcd"
+       sleep 3
+       groupadd --system
+
+}
+
+
+
 ### Running function
 ### Checking and help syntax command
 if [ $# -ne 1 ]
@@ -145,6 +154,7 @@ if [ "$1" == "controller" ]; then
 	install_database
 	install_rabbitmq
 	install_memcache
+        install_etcd
 
 else 
 	install_crudini
