@@ -21,6 +21,7 @@ echocolor "Install keystone"
 # echo "manual" > /etc/init/keystone.override
 
 apt-get -y install keystone --allow-unauthenticated
+apt-get -y install apache2 libapache2-mod-wsgi
 
 # Back-up file keystone.conf
 path_keystone=/etc/keystone/keystone.conf
@@ -52,6 +53,8 @@ keystone-manage bootstrap --bootstrap-password $ADMIN_PASS \
 echocolor "Configure the Apache HTTP server"
 sleep 3
 echo "ServerName $CTL_MGNT_IP" >>  /etc/apache2/apache2.conf
+
+echocolor "Restart apache2"
 
 systemctl restart apache2
 rm -f /var/lib/keystone/keystone.db

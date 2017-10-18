@@ -21,8 +21,17 @@ if [ "$1" == "controller" ]; then
 		bash $dir_path/install/install_keystone.sh
         bash $dir_path/install/install_glance.sh
         bash $dir_path/install/install_nova.sh $1
-        bash $dir_path/install/install_neutron.sh $1
-        bash $dir_path/install/install_horizon.sh
+        #Stope here and wait for other nodes to be up
+        while true; do
+          read -p "Are you sure all compute nodes are sucessfully installed?" yn
+          case $yn in
+            [Yy]* ) su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+                    bash $dir_path/install/install_neutron.sh $1;;
+                    bash $dir_path/install/install_horizon.sh;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+          esac
+        done
 
 elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ]; then
 	bash $dir_path/install/install_nova.sh $1
