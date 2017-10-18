@@ -12,6 +12,9 @@ source $dir_path/lib/functions.sh
 path_chrony=/etc/chrony/chrony.conf
 path_db_openstack=/etc/mysql/conf.d/openstack.cnf
 path_db_50server=/etc/mysql/mariadb.conf.d/50-server.cnf
+path_etcd_conf = etc/etcd/etcd.conf.yml
+path_etcd_service = lib/systemd/system/etcd.service
+
 
 #############################################
 function install_crudini {
@@ -130,7 +133,50 @@ function install_memcache {
 function install_etcd {
        echocolor "install and configure etcd"
        sleep 3
-       groupadd --system
+       apt-get install curl
+       groupadd --system etcd
+       useradd --home-dir "/var/lib/etcd" --system --shell /bin/false -g etcd  etcd
+       mkdir -p /etc/etcd
+       chown etcd:etcd  /etc/etcd
+       mkdir -p /var/lib/etcd
+       chown etcd:etcd /var/lib/etcd
+       ETCD_VER=v3.2.7
+       rm -rf /tmp/etcd && mkdir -p /tmp/etcd
+       curl -L https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+       tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1
+       cp /tmp/etcd/etcd /usr/bin/etcd
+       cp /tmp/etcd/etcdctl /usr/bin/etcdctl
+       
+       # write controller configuration on the etcd conf. file
+       cat << EOF > $path_etcd_conf
+name: $HOST_CTL
+data-dir: /var/lib/etcd
+initial-cluster-state: 'new'
+initial-cluster-token: 'etcd-cluster-01'
+initial-cluster: $HOST_CTL=http://$CTL_MGNT_IP:2380
+initial-advertise-peer-urls: http://$CTL_MGNT_IP:2380
+advertise-client-urls: http://$CTL_MGNT_IP:2379
+listen-peer-urls: http://0.0.0.0:2380
+listen-client-urls: http://$CTL_MGNT_IP:2379
+
+EOF
+
+       ######################################################
+       #Create etcd service
+       ops_edit $path_etcd_service Unit After network.target
+       ops_edit $path_etcd_service Unit Description etcd - highly-available key value store
+       
+       ops_edit $path_etcd_service Service LimitNOFILE 65536
+       ops_edit $path_etcd_service Service Restart on-failure
+       ops_edit $path_etcd_service Service Type notify
+       ops_edit $path_etcd_service Service ExecStart /usr/bin/etcd --config-file /etc/etcd/etcd.conf.yml
+       ops_edit $path_etcd_service Service User etcd
+       ops_edit $path_etcd_service Install WantedBy multi-user.target
+       
+       echocolor "Restarting etcd"
+       sleep 3
+       systemctl enable etcd
+       systemctl start etcd
 
 }
 

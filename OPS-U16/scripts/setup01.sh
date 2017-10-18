@@ -182,7 +182,7 @@ function repo_openstack {
     echocolor "Enable the OpenStack Newton repository"
     sleep 3
     apt install software-properties-common -y
-    add-apt-repository cloud-archive:pike -y
+    add-apt-repository cloud-archive:$OPS_RELEASE -y
     echocolor "Upgrade the packages for server"
     sleep 3
     apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
