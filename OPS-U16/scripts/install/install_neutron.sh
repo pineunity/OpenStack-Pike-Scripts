@@ -40,7 +40,7 @@ EOF
 	echocolor "Create  user, endpoint for NEUTRON"
 	sleep 5
 
-	openstack user create neutron --domain default --password $NEUTRON_PASS
+	openstack user create --domain default --password $NEUTRON_PASS neutron
 	openstack role add --project service --user neutron admin
 
 	openstack service create --name neutron \
@@ -72,13 +72,13 @@ EOF
 	test -f $neutron_ctl.orig || cp $neutron_ctl $neutron_ctl.orig
 
 	## [DEFAULT] section
-
+        
 	ops_edit $neutron_ctl DEFAULT service_plugins router
-	ops_edit $neutron_ctl DEFAULT allow_overlapping_ips True
+	ops_edit $neutron_ctl DEFAULT allow_overlapping_ips true
 	ops_edit $neutron_ctl DEFAULT auth_strategy keystone
 	ops_edit $neutron_ctl DEFAULT rpc_backend rabbit
-	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_status_changes True
-	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_data_changes True
+	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_status_changes true
+	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_data_changes true
 	ops_edit $neutron_ctl DEFAULT core_plugin ml2
 	# ops_edit $neutron_ctl DEFAULT nova_url http://$CTL_MGNT_IP:8774/v2
 	# ops_edit $neutron_ctl DEFAULT verbose True
@@ -139,7 +139,7 @@ EOF
 	ops_edit $ml2_clt ml2_type_vxlan vni_ranges 201:300
 
 	## [securitygroup] section
-	ops_edit $ml2_clt securitygroup enable_ipset True
+	ops_edit $ml2_clt securitygroup enable_ipset true
 
 	echocolor "Configuring linuxbridge_agent"
 	sleep 5
@@ -149,12 +149,12 @@ EOF
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan True
+	ops_edit $lbfile vxlan enable_vxlan true
 	ops_edit $lbfile vxlan local_ip $CTL_DATA_IP
-	ops_edit $lbfile vxlan l2_population True
+	ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
-	ops_edit $lbfile securitygroup enable_security_group True
+	ops_edit $lbfile securitygroup enable_security_group true
 	ops_edit $lbfile securitygroup firewall_driver \
 	    neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
@@ -164,8 +164,7 @@ EOF
 	test -f $netl3agent.orig || cp $netl3agent $netl3agent.orig
 
 	## [DEFAULT] section
-	ops_edit $netl3agent DEFAULT interface_driver \
-	    neutron.agent.linux.interface.BridgeInterfaceDriver
+	ops_edit $netl3agent DEFAULT interface_driver linuxbridge
 	ops_edit $netl3agent DEFAULT external_network_bridge
 	# ops_edit $netl3agent DEFAULT router_delete_namespaces True
 	# ops_edit $netl3agent DEFAULT verbose True
@@ -177,10 +176,9 @@ EOF
 	test -f $netdhcp.orig || cp $netdhcp $netdhcp.orig
 
 	## [DEFAULT] section
-	ops_edit $netdhcp DEFAULT interface_driver \
-	    neutron.agent.linux.interface.BridgeInterfaceDriver
+	ops_edit $netdhcp DEFAULT interface_driver linuxbridge
 	ops_edit $netdhcp DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
-	ops_edit $netdhcp DEFAULT enable_isolated_metadata True
+	ops_edit $netdhcp DEFAULT enable_isolated_metadata true
 	ops_edit $netdhcp DEFAULT dnsmasq_config_file /etc/neutron/dnsmasq-neutron.conf
 
 
@@ -232,8 +230,8 @@ elif [ "$1" == "compute1" ]; then
 
 	ops_edit $neutron_com DEFAULT transport_url  rabbit://openstack:$RABBIT_PASS@$CTL_MGNT_IP
 	ops_edit $neutron_com DEFAULT auth_strategy keystone	
-	ops_edit $neutron_com DEFAULT notify_nova_on_port_status_changes True
-	ops_edit $neutron_com DEFAULT notify_nova_on_port_data_changes True
+	ops_edit $neutron_com DEFAULT notify_nova_on_port_status_changes true
+	ops_edit $neutron_com DEFAULT notify_nova_on_port_data_changes true
 	ops_edit $neutron_com DEFAULT core_plugin ml2
 
 	## [database] section
@@ -259,12 +257,12 @@ elif [ "$1" == "compute1" ]; then
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan True
+	ops_edit $lbfile vxlan enable_vxlan true
 	ops_edit $lbfile vxlan local_ip $COM1_DATA_IP
-	ops_edit $lbfile vxlan l2_population True
+	ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
-	ops_edit $lbfile securitygroup enable_security_group True
+	ops_edit $lbfile securitygroup enable_security_group true
 	ops_edit $lbfile securitygroup firewall_driver \
 	    neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
@@ -280,8 +278,8 @@ elif [ "$1" == "compute2" ]; then
 
 	ops_edit $neutron_com DEFAULT transport_url  rabbit://openstack:$RABBIT_PASS@$CTL_MGNT_IP
 	ops_edit $neutron_com DEFAULT auth_strategy keystone	
-	ops_edit $neutron_com DEFAULT notify_nova_on_port_status_changes True
-	ops_edit $neutron_com DEFAULT notify_nova_on_port_data_changes True
+	ops_edit $neutron_com DEFAULT notify_nova_on_port_status_changes true
+	ops_edit $neutron_com DEFAULT notify_nova_on_port_data_changes true
 	ops_edit $neutron_com DEFAULT core_plugin ml2
 
 	## [database] section
@@ -307,12 +305,12 @@ elif [ "$1" == "compute2" ]; then
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan True
+	ops_edit $lbfile vxlan enable_vxlan true
 	ops_edit $lbfile vxlan local_ip $COM2_DATA_IP
-	ops_edit $lbfile vxlan l2_population True
+	ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
-	ops_edit $lbfile securitygroup enable_security_group True
+	ops_edit $lbfile securitygroup enable_security_group true
 	ops_edit $lbfile securitygroup firewall_driver \
 	    neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
@@ -321,9 +319,9 @@ elif [ "$1" == "compute2" ]; then
 	service neutron-linuxbridge-agent restart	
 
 else
-	echocolor "Khong phai node controller"
+	echocolor "This configuration is just needed for controller node"
 fi
 
-echocolor "Da cau hinh xong"
+echocolor "Installed successfully. Congratulation!!!"
 
 

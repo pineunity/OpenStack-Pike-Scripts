@@ -50,6 +50,9 @@ sed -i "s/127.0.0.1/$CTL_MGNT_IP/g" /etc/openstack-dashboard/local_settings.py
 sed -i "s/http:\/\/\%s:5000\/v2.0/http:\/\/\%s:5000\/v3/g" \
 /etc/openstack-dashboard/local_settings.py
 
+sed -i "s/#OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False/OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True/g" \
+/etc/openstack-dashboard/local_settings.py
+
 cat << EOF >> /etc/openstack-dashboard/local_settings.py
 OPENSTACK_API_VERSIONS = {
 #    "data-processing": 1.1,
@@ -66,6 +69,8 @@ sed -i "s/DEFAULT_THEME = 'ubuntu'/DEFAULT_THEME = 'default'/g" \
 sed -i "s/#OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'default'/\
 OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'default'/g" \
 	/etc/openstack-dashboard/local_settings.py
+
+echo "WSGIApplicationGroup \%\{GLOBAL\}" >> /etc/apache2/conf-available/openstack-dashboard.conf
 
 ## /* Restarting apache2 and memcached
 service apache2 restart
