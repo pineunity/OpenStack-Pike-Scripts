@@ -25,8 +25,8 @@ if [ "$1" == "controller" ]; then
         while true; do
           read -p "Are you sure all compute nodes are sucessfully installed?" yn
           case $yn in
-            [Yy]* ) bash $dir_path/verification.sh $1;;
-                    bash $dir_path/install/install_neutron.sh $1;;
+            [Yy]* ) bash $dir_path/verification.sh $1
+                    bash $dir_path/install/install_neutron.sh $1
                     bash $dir_path/install/install_horizon.sh;;
             [Nn]* ) echo "Please wait util all nova compute nodes are installed.";;
             * ) echo "Please answer yes or no.";;
