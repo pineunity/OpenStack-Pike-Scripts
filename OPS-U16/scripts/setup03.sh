@@ -28,7 +28,7 @@ if [ "$1" == "controller" ]; then
             [Yy]* ) bash $dir_path/verification.sh $1;;
                     bash $dir_path/install/install_neutron.sh $1;;
                     bash $dir_path/install/install_horizon.sh;;
-            [Nn]* ) echo "Please answer yes or no.";;
+            [Nn]* ) echo "Please wait util all nova compute nodes are installed.";;
             * ) echo "Please answer yes or no.";;
           esac
         done
@@ -40,7 +40,7 @@ elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ]; then
           read -p "Are you sure the discovery command is run in controller node?" yn
           case $yn in
             [Yy]* ) bash $dir_path/install/install_neutron.sh $1;;
-            [Nn]* ) echo "Please answer yes or no.";;
+            [Nn]* ) echo "Please run discovery serice in controller node.";;
             * ) echo "Please answer yes or no.";;
           esac
         done
