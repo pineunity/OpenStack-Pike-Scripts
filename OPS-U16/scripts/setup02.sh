@@ -41,7 +41,7 @@ function install_ntp {
 	if [ "$1" == "controller" ]; then
 		sed -i 's/pool 2.debian.pool.ntp.org offline iburst/\
 server time.google.com iburst /g' $path_chrony
-                sed -i "s/#allow foo.example.net/allow $SUBNET_IP_MGNT/g" $path_chrony
+                sed -i "s/#allow foo\.example\.net/allow $SUBNET_IP_MGNT/g" $path_chrony
 
 	elif [ "$1" == "compute1" ]; then
 		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
@@ -142,7 +142,7 @@ function install_etcd {
        chown etcd:etcd /var/lib/etcd
        ETCD_VER=v3.2.7
        rm -rf /tmp/etcd && mkdir -p /tmp/etcd
-       curl -L 'https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz' -o '/tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz'
+       curl -L "https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz" -o "/tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz"
        tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1
        cp /tmp/etcd/etcd /usr/bin/etcd
        cp /tmp/etcd/etcdctl /usr/bin/etcdctl
