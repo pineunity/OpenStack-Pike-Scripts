@@ -12,8 +12,8 @@ source $dir_path/lib/functions.sh
 path_chrony=/etc/chrony/chrony.conf
 path_db_openstack=/etc/mysql/conf.d/openstack.cnf
 path_db_50server=/etc/mysql/mariadb.conf.d/50-server.cnf
-path_etcd_conf=/etc/etcd/etcd.conf.yml
-path_etcd_service=/lib/systemd/system/etcd.service
+path_etcd_conf=etc/etcd/etcd.conf.yml
+path_etcd_service=lib/systemd/system/etcd.service
 
 
 #############################################
@@ -40,8 +40,8 @@ function install_ntp {
 
 	if [ "$1" == "controller" ]; then
 		sed -i 's/pool 2.debian.pool.ntp.org offline iburst/\
-server time.google.com iburst /g' $path_chrony
-                sed -i 's/#allow ::\/0/allow  $SUBNET_IP_MGNT/g' $path_chrony
+server time.google.com iburst \
+allow  $SUBNET_IP_MGNT/g' $path_chrony
 
 	elif [ "$1" == "compute1" ]; then
 		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
@@ -142,7 +142,7 @@ function install_etcd {
        chown etcd:etcd /var/lib/etcd
        ETCD_VER=v3.2.7
        rm -rf /tmp/etcd && mkdir -p /tmp/etcd
-       curl -L 'https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz' -o '/tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz'
+       curl -L https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
        tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1
        cp /tmp/etcd/etcd /usr/bin/etcd
        cp /tmp/etcd/etcdctl /usr/bin/etcdctl
