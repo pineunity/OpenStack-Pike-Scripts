@@ -12,8 +12,8 @@ source $dir_path/lib/functions.sh
 path_chrony=/etc/chrony/chrony.conf
 path_db_openstack=/etc/mysql/conf.d/openstack.cnf
 path_db_50server=/etc/mysql/mariadb.conf.d/50-server.cnf
-path_etcd_conf = etc/etcd/etcd.conf.yml
-path_etcd_service = lib/systemd/system/etcd.service
+path_etcd_conf=etc/etcd/etcd.conf.yml
+path_etcd_service=lib/systemd/system/etcd.service
 
 
 #############################################
@@ -176,6 +176,7 @@ EOF
        echocolor "Restarting etcd"
        sleep 3
        systemctl enable etcd
+       sleep 7 
        systemctl start etcd
 
 }

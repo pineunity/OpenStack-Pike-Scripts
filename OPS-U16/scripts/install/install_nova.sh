@@ -205,7 +205,6 @@ if [ "$1" == "controller" ]; then
 	echocolor "Restarting NOVA on $1"
 	sleep 3
 	service nova-api restart
-	service nova-cert restart
 	service nova-consoleauth restart
 	service nova-scheduler restart
 	service nova-conductor restart
@@ -214,7 +213,6 @@ if [ "$1" == "controller" ]; then
 	sleep 7
 	echocolor "Restarting NOVA on $1"
 	service nova-api restart
-	service nova-cert restart
 	service nova-consoleauth restart
 	service nova-scheduler restart
 	service nova-conductor restart
