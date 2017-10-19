@@ -40,8 +40,8 @@ function install_ntp {
 
 	if [ "$1" == "controller" ]; then
 		sed -i 's/pool 2.debian.pool.ntp.org offline iburst/\
-server time.google.com iburst \
-allow  $SUBNET_IP_MGNT/g' $path_chrony
+server time.google.com iburst /g' $path_chrony
+                sed -i 's/#allow ::\/0/allow  $SUBNET_IP_MGNT/g' $path_chrony
 
 	elif [ "$1" == "compute1" ]; then
 		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
