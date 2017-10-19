@@ -63,7 +63,7 @@ fi
 if [ "$1" == "controller" ]; then
 	echocolor "Install NOVA in $CTL_MGNT_IP"
 	sleep 3
-	apt-get -y install nova-api nova-cert nova-conductor nova-consoleauth \
+	apt-get -y install nova-api nova-conductor nova-consoleauth \
 	    	nova-novncproxy nova-scheduler nova-placement-api
 
 elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ] ; then
