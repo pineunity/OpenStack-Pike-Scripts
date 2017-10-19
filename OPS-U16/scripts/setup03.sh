@@ -25,10 +25,7 @@ if [ "$1" == "controller" ]; then
         while true; do
           read -p "Are you sure all compute nodes are sucessfully installed?" yn
           case $yn in
-            [Yy]* ) su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
-                    sleep 5
-                    su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
-                    nova-status upgrade check
+            [Yy]* ) bash $dir_path/verification.sh $1;;
                     bash $dir_path/install/install_neutron.sh $1;;
                     bash $dir_path/install/install_horizon.sh;;
             [Nn]* ) echo "Please answer yes or no.";;
