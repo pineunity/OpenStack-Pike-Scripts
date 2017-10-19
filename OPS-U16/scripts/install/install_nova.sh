@@ -120,7 +120,7 @@ if [ "$1" == "controller" ]; then
 	ops_edit $nova_ctl cinder os_region_name RegionOne
 
 else
-	echocolor "Khong phai node Controller"
+	echocolor "Controller is not spevified"
 fi
 
 ## [oslo_messaging_rabbit] section
