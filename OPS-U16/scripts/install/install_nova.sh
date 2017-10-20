@@ -169,7 +169,7 @@ ops_edit $nova_ctl placement project_domain_name Default
 ops_edit $nova_ctl placement project_name service
 ops_edit $nova_ctl placement auth_type password
 ops_edit $nova_ctl placement user_domain_name Default
-ops_edit $nova_ctl placement auth_url = http://$CTL_MGNT_IP:35357/v3
+ops_edit $nova_ctl placement auth_url http://$CTL_MGNT_IP:35357/v3
 ops_edit $nova_ctl placement username placement
 ops_edit $nova_ctl placement password $PLACEMENT_PASS
 
