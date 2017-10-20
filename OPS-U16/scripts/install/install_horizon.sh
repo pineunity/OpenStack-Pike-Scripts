@@ -54,7 +54,7 @@ sed -i "s/#OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False/OPENSTACK_KEYSTONE_MUL
 /etc/openstack-dashboard/local_settings.py
 
 cat << EOF >> /etc/openstack-dashboard/local_settings.py
-\
+#Configure OpenStack APIs
 OPENSTACK_API_VERSIONS = {
 #   "data-processing": 1.1,
     "identity": 3,
