@@ -39,9 +39,9 @@ function install_ntp {
 	test -f $path_chrony.orig || cp $path_chrony $path_chrony.orig
 
 	if [ "$1" == "controller" ]; then
-		sed -i 's/pool 2.debian.pool.ntp.org offline iburst/\
-server time.google.com iburst /g' $path_chrony
-                sed -i "s/#allow ::\/0/allow  $SUBNET_IP_MGNT/g" $path_chrony
+		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
+server time.google.com iburst \
+allow $SUBNET_IP_MGNT /g" $path_chrony
 
 	elif [ "$1" == "compute1" ]; then
 		sed -i "s/pool 2.debian.pool.ntp.org offline iburst/\
@@ -142,14 +142,12 @@ function install_etcd {
        chown etcd:etcd /var/lib/etcd
        ETCD_VER=v3.2.7
        rm -rf /tmp/etcd && mkdir -p /tmp/etcd
-       curl -L 'https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz' -o '/tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz'
+       curl -L "https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz" -o "/tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz"
        tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1
        cp /tmp/etcd/etcd /usr/bin/etcd
        cp /tmp/etcd/etcdctl /usr/bin/etcdctl
        
        # write controller configuration on the etcd conf. file
-       echo < $path_etcd_conf
-       echo < $path_etcd_service
        cat << EOF > $path_etcd_conf
 name: $HOST_CTL
 data-dir: /var/lib/etcd
@@ -166,15 +164,17 @@ EOF
        ######################################################
        #Create etcd service
        ops_edit $path_etcd_service Unit After network.target
-       ops_edit $path_etcd_service Unit Description etcd - highly-available key value store
-       
+       ops_edit $path_etcd_service Unit Description 'etcd \- highly-available key value store'
+
        ops_edit $path_etcd_service Service LimitNOFILE 65536
        ops_edit $path_etcd_service Service Restart on-failure
        ops_edit $path_etcd_service Service Type notify
-       ops_edit $path_etcd_service Service ExecStart /usr/bin/etcd --config-file /etc/etcd/etcd.conf.yml
+       ops_edit $path_etcd_service Service ExecStart /usr/bin/etcd --config-file etc/etcd/etcd.conf.yml
        ops_edit $path_etcd_service Service User etcd
        ops_edit $path_etcd_service Install WantedBy multi-user.target
        
+
+       sed -i  "s/ExecStart = \/usr\/bin\/etcd/ExecStart = \/usr\/bin\/etcd --config-file \/etc\/etcd\/etcd.conf.yml /g" $path_etcd_service
        echocolor "Restarting etcd"
        sleep 3
        systemctl enable etcd
