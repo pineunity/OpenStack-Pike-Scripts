@@ -70,7 +70,7 @@ sed -i "s/#OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'default'/\
 OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'default'/g" \
 	/etc/openstack-dashboard/local_settings.py
 
-echo "WSGIApplicationGroup \%\{GLOBAL\}" >> /etc/apache2/conf-available/openstack-dashboard.conf
+echo "WSGIApplicationGroup %{GLOBAL}" >> /etc/apache2/conf-available/openstack-dashboard.conf
 
 ## /* Restarting apache2 and memcached
 service apache2 restart
