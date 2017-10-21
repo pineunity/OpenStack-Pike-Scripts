@@ -23,12 +23,14 @@ if [ "$1" == "controller" ]; then
         bash $dir_path/install/install_nova.sh $1
         #Stope here and wait for other nodes to be up
         while true; do
-          read -p "Are you sure all compute nodes are sucessfully installed?" yn
+          read -p "Are you sure all compute nodes were already in the last step?" yn
           case $yn in
             [Yy]* ) bash $dir_path/verification.sh $1
                     bash $dir_path/install/install_neutron.sh $1
-                    bash $dir_path/install/install_horizon.sh;;
-            [Nn]* ) echo "Please wait util all nova compute nodes are installed.";;
+                    bash $dir_path/install/install_horizon.sh
+                    echocolor "Installed succesfully OpenStack in controller node"
+                    exit;;
+            [Nn]* ) echo "Please firstly run the last step in all compute nodes.";;
             * ) echo "Please answer yes or no.";;
           esac
         done
@@ -37,10 +39,11 @@ elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ]; then
 	bash $dir_path/install/install_nova.sh $1
         #Stope here and wait for other nodes to be up
         while true; do
-          read -p "Are you sure the discovery command is run in controller node?" yn
+          read -p "you already ran verification.sh in controller node, didnt you?" yn
           case $yn in
-            [Yy]* ) bash $dir_path/install/install_neutron.sh $1;;
-            [Nn]* ) echo "Please run discovery serice in controller node.";;
+            [Yy]* ) bash $dir_path/install/install_neutron.sh $1
+                    exit;;
+            [Nn]* ) echo "Please firstly run verification.sh in controller node.";;
             * ) echo "Please answer yes or no.";;
           esac
         done
