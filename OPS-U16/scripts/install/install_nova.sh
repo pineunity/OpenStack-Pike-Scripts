@@ -12,6 +12,8 @@ source admin-openrc
 ##  Init config path
 nova_ctl=/etc/nova/nova.conf
 
+nova_comp=/etc/nova/nova-compute.conf
+
 if [ "$1" == "controller" ]; then
 		
 	echocolor "Create DB for NOVA"
@@ -151,6 +153,10 @@ elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ] ; then
 	ops_edit $nova_ctl vnc vncserver_proxyclient_address \$my_ip
 	ops_edit $nova_ctl vnc novncproxy_base_url http://$CTL_MGNT_IP:6080/vnc_auto.html
 
+        #edit libvirt to work with qemu
+        ops_del $nova_compute libvirt virt_type
+        ops_edit $nova_compute libvirt virt_type qemu
+
 else
 	echo "VNC is not required"
 fi
@@ -228,5 +234,5 @@ elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ]; then
 
 
 else
-	echocolor "Khong phai NOVA - CTL"
+	echocolor "NOVA configuration failed"
 fi
