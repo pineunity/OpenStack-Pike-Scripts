@@ -133,7 +133,7 @@ function install_memcache {
 function install_etcd {
        echocolor "install and configure etcd"
        sleep 3
-       apt-get install curl
+       #apt-get install curl
        groupadd --system etcd
        useradd --home-dir "/var/lib/etcd" --system --shell /bin/false -g etcd  etcd
        mkdir -p /etc/etcd
