@@ -154,8 +154,8 @@ elif [ "$1" == "compute1" ] || [ "$1" == "compute2" ] ; then
 	ops_edit $nova_ctl vnc novncproxy_base_url http://$CTL_MGNT_IP:6080/vnc_auto.html
 
         #edit libvirt to work with qemu
-        ops_del $nova_compute libvirt virt_type
-        ops_edit $nova_compute libvirt virt_type qemu
+        ops_del $nova_comp libvirt virt_type
+        ops_edit $nova_comp libvirt virt_type qemu
 
 else
 	echo "VNC is not required"
