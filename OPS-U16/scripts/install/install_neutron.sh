@@ -194,7 +194,7 @@ EOF
 	test -f $netmetadata.orig || cp $netmetadata $netmetadata.orig
 
 	## [DEFAULT]
-	ops_edit $netmetadata DEFAULT nova_metadata_ip $CTL_MGNT_IP
+	ops_edit $netmetadata DEFAULT nova_metadata_host $HOST_CTL
 	ops_edit $netmetadata DEFAULT metadata_proxy_shared_secret $METADATA_SECRET
 
 
