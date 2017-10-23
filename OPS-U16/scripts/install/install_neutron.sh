@@ -76,7 +76,7 @@ EOF
 	ops_edit $neutron_ctl DEFAULT service_plugins router
 	ops_edit $neutron_ctl DEFAULT allow_overlapping_ips true
 	ops_edit $neutron_ctl DEFAULT auth_strategy keystone
-	ops_edit $neutron_ctl DEFAULT rpc_backend rabbit
+	#ops_edit $neutron_ctl DEFAULT rpc_backend rabbit
 	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_status_changes true
 	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_data_changes true
 	ops_edit $neutron_ctl DEFAULT core_plugin ml2
@@ -136,7 +136,7 @@ EOF
 	# ops_edit $ml2_clt ml2_type_gre tunnel_id_ranges 100:200
 
 	## [ml2_type_vxlan] section
-	ops_edit $ml2_clt ml2_type_vxlan vni_ranges 201:300
+	ops_edit $ml2_clt ml2_type_vxlan vni_ranges 1:1000
 
 	## [securitygroup] section
 	ops_edit $ml2_clt securitygroup enable_ipset true
@@ -165,7 +165,7 @@ EOF
 
 	## [DEFAULT] section
 	ops_edit $netl3agent DEFAULT interface_driver linuxbridge
-	ops_edit $netl3agent DEFAULT external_network_bridge
+	#ops_edit $netl3agent DEFAULT external_network_bridge
 	# ops_edit $netl3agent DEFAULT router_delete_namespaces True
 	# ops_edit $netl3agent DEFAULT verbose True
 
@@ -179,7 +179,7 @@ EOF
 	ops_edit $netdhcp DEFAULT interface_driver linuxbridge
 	ops_edit $netdhcp DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
 	ops_edit $netdhcp DEFAULT enable_isolated_metadata true
-	ops_edit $netdhcp DEFAULT dnsmasq_config_file /etc/neutron/dnsmasq-neutron.conf
+	#ops_edit $netdhcp DEFAULT dnsmasq_config_file /etc/neutron/dnsmasq-neutron.conf
 
 
 	echocolor "Config MTU"
@@ -268,6 +268,7 @@ elif [ "$1" == "compute1" ]; then
 
 	echocolor "Restarting NEUTRON service "
 	sleep 7
+        service nova-compute restart
 	service neutron-linuxbridge-agent restart
 
 elif [ "$1" == "compute2" ]; then
@@ -316,6 +317,7 @@ elif [ "$1" == "compute2" ]; then
 
 	echocolor "Restarting NEUTRON service "
 	sleep 7
+        service nova-compute restart
 	service neutron-linuxbridge-agent restart	
 
 else

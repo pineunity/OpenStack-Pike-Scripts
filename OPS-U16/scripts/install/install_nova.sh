@@ -87,8 +87,8 @@ sleep 3
 ops_del $nova_ctl DEFAULT logdir
 ops_del $nova_ctl DEFAULT verbose
 #ops_edit $nova_ctl DEFAULT log-dir /var/log/nova
-ops_edit $nova_ctl DEFAULT enabled_apis osapi_compute,metadata
-ops_edit $nova_ctl DEFAULT rpc_backend rabbit
+#ops_edit $nova_ctl DEFAULT enabled_apis osapi_compute,metadata
+#ops_edit $nova_ctl DEFAULT rpc_backend rabbit
 ops_edit $nova_ctl DEFAULT auth_strategy keystone
 ops_edit $nova_ctl DEFAULT rootwrap_config /etc/nova/rootwrap.conf
 ops_edit $nova_ctl DEFAULT use_neutron True
@@ -143,6 +143,7 @@ ops_edit $nova_ctl keystone_authtoken password $NOVA_PASS
 
 ## [vnc] section
 if [ "$1" == "controller" ]; then
+        ops_edit $nova_ctl vnc enabled true
 	ops_edit $nova_ctl vnc vncserver_listen \$my_ip
 	ops_edit $nova_ctl vnc vncserver_proxyclient_address \$my_ip
 
