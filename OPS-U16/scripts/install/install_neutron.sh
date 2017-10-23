@@ -57,7 +57,7 @@ EOF
 
 	# SERVICE_TENANT_ID=`keystone tenant-get service | awk '$2~/^id/{print $4}'`
 
-	echocolor "Install NEUTRON node - Using Linux Bridge on $1"
+	echocolor "Install NEUTRON node - Using provider networks on $1"
 	sleep 5
 	apt-get -y install neutron-server neutron-plugin-ml2 \
 	neutron-linuxbridge-agent neutron-l3-agent neutron-dhcp-agent \
@@ -73,8 +73,8 @@ EOF
 
 	## [DEFAULT] section
         
-	ops_edit $neutron_ctl DEFAULT service_plugins router
-	ops_edit $neutron_ctl DEFAULT allow_overlapping_ips true
+	ops_edit $neutron_ctl DEFAULT service_plugins
+	#ops_edit $neutron_ctl DEFAULT allow_overlapping_ips true
 	ops_edit $neutron_ctl DEFAULT auth_strategy keystone
 	#ops_edit $neutron_ctl DEFAULT rpc_backend rabbit
 	ops_edit $neutron_ctl DEFAULT notify_nova_on_port_status_changes true
@@ -123,9 +123,12 @@ EOF
 	test -f $ml2_clt.orig || cp $ml2_clt $ml2_clt.orig
 
 	## [ml2] section
-	ops_edit $ml2_clt ml2 type_drivers flat,vlan,vxlan
-	ops_edit $ml2_clt ml2 tenant_network_types vxlan
-	ops_edit $ml2_clt ml2 mechanism_drivers linuxbridge,l2population
+	#ops_edit $ml2_clt ml2 type_drivers flat,vlan,vxlan
+        ops_edit $ml2_clt ml2 type_drivers flat,vlan
+	#ops_edit $ml2_clt ml2 tenant_network_types vxlan
+        ops_edit $ml2_clt ml2 tenant_network_types
+	#ops_edit $ml2_clt ml2 mechanism_drivers linuxbridge,l2population
+        ops_edit $ml2_clt ml2 mechanism_drivers linuxbridge
 	ops_edit $ml2_clt ml2 extension_drivers port_security
 
 
@@ -136,7 +139,7 @@ EOF
 	# ops_edit $ml2_clt ml2_type_gre tunnel_id_ranges 100:200
 
 	## [ml2_type_vxlan] section
-	ops_edit $ml2_clt ml2_type_vxlan vni_ranges 1:1000
+	#ops_edit $ml2_clt ml2_type_vxlan vni_ranges 1:1000
 
 	## [securitygroup] section
 	ops_edit $ml2_clt securitygroup enable_ipset true
@@ -149,9 +152,10 @@ EOF
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan true
-	ops_edit $lbfile vxlan local_ip $CTL_DATA_IP
-	ops_edit $lbfile vxlan l2_population true
+	ops_edit $lbfile vxlan enable_vxlan false
+        #ops_edit $lbfile vxlan enable_vxlan true
+	#ops_edit $lbfile vxlan local_ip $CTL_DATA_IP
+	#ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
 	ops_edit $lbfile securitygroup enable_security_group true
@@ -213,7 +217,7 @@ EOF
 	service neutron-linuxbridge-agent restart
 	service neutron-dhcp-agent restart
 	service neutron-metadata-agent restart
-	service neutron-l3-agent restart
+	#service neutron-l3-agent restart
 
 	rm -f /var/lib/neutron/neutron.sqlite
 
@@ -257,9 +261,10 @@ elif [ "$1" == "compute1" ]; then
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan true
-	ops_edit $lbfile vxlan local_ip $COM1_DATA_IP
-	ops_edit $lbfile vxlan l2_population true
+        ops_edit $lbfile vxlan enable_vxlan false
+	#ops_edit $lbfile vxlan enable_vxlan true
+	#ops_edit $lbfile vxlan local_ip $COM1_DATA_IP
+	#ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
 	ops_edit $lbfile securitygroup enable_security_group true
@@ -306,9 +311,10 @@ elif [ "$1" == "compute2" ]; then
 	ops_edit $lbfile linux_bridge physical_interface_mappings provider:$EXT_INTERFACE
 
 	# [vxlan] section
-	ops_edit $lbfile vxlan enable_vxlan true
-	ops_edit $lbfile vxlan local_ip $COM2_DATA_IP
-	ops_edit $lbfile vxlan l2_population true
+        ops_edit $lbfile vxlan enable_vxlan false
+	#ops_edit $lbfile vxlan enable_vxlan true
+	#ops_edit $lbfile vxlan local_ip $COM2_DATA_IP
+	#ops_edit $lbfile vxlan l2_population true
 
 	# [securitygroup] section
 	ops_edit $lbfile securitygroup enable_security_group true
